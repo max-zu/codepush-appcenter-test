@@ -7,8 +7,14 @@
  */
 
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, ActivityIndicator} from 'react-native';
-import codePush from "react-native-code-push";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native';
+import CodePush from "react-native-code-push";
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -18,22 +24,35 @@ const instructions = Platform.select({
 });
 
 type Props = {};
+
 class App extends Component<Props> {
+  onButtonPress = () => {
+    CodePush.sync({
+      updateDialog: true,
+      installMode: CodePush.InstallMode.IMMEDIATE
+    });
+  };
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!!!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
+        <Text style={styles.welcome}>Welcome to React Native!!!!!!!!</Text>
+        <Text style={styles.instructions}>To get started, edit App.js!!!!!!</Text>
         <Text style={styles.instructions}>{instructions}</Text>
-        <ActivityIndicator
-
-        />
+        <TouchableOpacity onPress={this.onButtonPress}>
+          <Text>Check for updates</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
-export default codePush(App)
+const codePushOptions = {
+  checkFrequency: CodePush.CheckFrequency.ON_APP_START,
+  installMode: CodePush.InstallMode.IMMEDIATE
+}
+
+export default CodePush(codePushOptions)(App);
 
 const styles = StyleSheet.create({
   container: {
