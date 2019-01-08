@@ -27,17 +27,43 @@ type Props = {};
 
 class App extends Component<Props> {
   onButtonPress = () => {
+    Platform.OS === 'android' && alert('asd')
     CodePush.sync({
       updateDialog: true,
       installMode: CodePush.InstallMode.IMMEDIATE
+    }, (status) => {
+      switch(status) {
+        case CodePush.SyncStatus.CHECKING_FOR_UPDATE:
+          alert("Checking for updates.");
+          break;
+        case CodePush.SyncStatus.DOWNLOADING_PACKAGE:
+          alert("Downloading package.");
+          break;
+        case CodePush.SyncStatus.INSTALLING_UPDATE:
+          alert("Installing update.");
+          break;
+        case CodePush.SyncStatus.UP_TO_DATE:
+          alert("Up-to-date.");
+          break;
+        case CodePush.SyncStatus.UPDATE_INSTALLED:
+          alert("Update installed.");
+          break;
+      }
+    }, (progress) => {
+      alert(`progress: ${progress}`)
     });
   };
+
+  async componentDidMount() {
+    await CodePush.notifyAppReady()
+  }
+
 
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!!!!!!!!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js!!!!!!</Text>
+        <Text style={styles.welcome}>Welcome to React Native!</Text>
+        <Text style={styles.instructions}>To get started, edit App.js!</Text>
         <Text style={styles.instructions}>{instructions}</Text>
         <Text style={styles.instructions}>{process.env.TEST_VAR}</Text>
         <TouchableOpacity onPress={this.onButtonPress}>
@@ -49,7 +75,7 @@ class App extends Component<Props> {
 }
 
 const codePushOptions = {
-  checkFrequency: CodePush.CheckFrequency.ON_APP_START,
+  checkFrequency: CodePush.CheckFrequency.MANUAL,
   installMode: CodePush.InstallMode.IMMEDIATE
 }
 
